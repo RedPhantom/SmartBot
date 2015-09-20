@@ -1,0 +1,22 @@
+Includes the test files I've used to check and see how the TCP communication works in Python.
+
+server.py
+~~~~~~~~~
+
+When run with the command promt, sends a string over tcp to target adress and port.
+Stopped with Ctrl-C interrupt.
+
+Running arguments:
+-a , --address	The adress for the tcp server to write to. For example: '127.0.0.1'
+-p , --port	The port for the tcp server to write to. For example: '12002'
+-s , --text	The string of text for the server to send. For example: 'sharks with frikin lasers'
+
+client.py
+~~~~~~~~~
+
+When run with the command promt, shows a string received via a tcp connection. Writes its buffer
+every 0.5 seconds. Stopped with Ctrl-C interrupt.
+
+Running arguments:
+-a , --address	The adress for the tcp server to listen to. For example: '127.0.0.1'
+-p , --port	The port for the tcp server to listen to. For example: '12002'
