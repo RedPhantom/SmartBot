@@ -22,17 +22,34 @@
 #
 #
 
-import socket
-
+import socket, serial, time
+serialNum = "/dev/ttyACM0"
 HOST = ''    # The remote host
 PORT = 12998 # The same port as used by the server
+
+print("Setting up Tcp server...")
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
+print("Done. Waiting for input.")
+
+
+# Find serial ports.
+try:
+	ser = serial.Serial(serialNum, 115200)
+except:
+	print "found serial port" , ser.name , "which is the default. Change it in the SBcontrolPi.py script."
+
+# Tcp server loop.
+		
 while 1:
-    
-    data = s.recv(1024)
-    if not data: break 
-    print 'Received', repr(data)
-    s.send("hello?")
+		s.send(">")
+		data = s.recv(1024)
+		if not data: break 
+		print 'Received', repr(data)
+		ser.write(repr(data))
+		# Send it via Serial
+		time.sleep(1)
+		s.send(ser.readline(1024).decode()) # Send back output		
+
 s.close()
 
