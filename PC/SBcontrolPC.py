@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  SBcontrolPi.py
+#  SBcontrolPC.py
 #
 #  Copyright 2015 Itay MacBunny <itay@BoBTop>
 #
@@ -21,37 +21,21 @@
 #  MA 02110-1301, USA.
 #
 #
+# Echo server program
+import socket
 
-import socket, serial, time
-serialNum = "/dev/ttyACM0"
-HOST = ''    # The remote host
-PORT = 12998 # The same port as used by the server
-
-print("Setting up Tcp server...")
+HOST = ''                 # Symbolic name meaning all available interfaces
+PORT = 12998              # Arbitrary non-privileged port
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((HOST, PORT))
-print("Done. Waiting for input.")
-
-# Find serial ports.
-try:
-	ser = serial.Serial(serialNum, 115200)
-	ser.timeout = 2
-except:
-	print "found serial port" , ser.name , "which is the default. Change it in the SBcontrolPi.py script."
-
-# Tcp server loop.
-		
+s.bind((HOST, PORT))
+s.listen(1)
+conn, addr = s.accept()
+print 'Connected by', addr
 while 1:
-		s.send(">")
-		data = s.recv(1024)
-		if not data: break 
-		print 'Received', repr(data)
-		ser.write(repr(data)) # Write to serial.
-		# Send it via Serial
-		incoming = ser.readline()
-		print incoming
-		s.send(chr(incoming)) # Send back output	
-		time.sleep(1)	
-
-s.close()
-
+    serialCmd = raw_input(">>>") # Send the data:
+    conn.sendall(serialCmd)
+    
+    #if not data: break # Read back
+    data = conn.recv(4096)
+    print(data)
+conn.close()
